@@ -19,7 +19,7 @@ int main() {
 	}
 
 
-	printf("请输入接龙人数(不包含接龙发起人)");
+	printf("请输入接龙人数(不包含接龙发起人): ");
 	scanf("%d", &n);
 	getchar();
 	if (end - begin + 1 == n)
@@ -59,7 +59,9 @@ int main() {
 			if (flag == 0)
 				printf("%d\n", i);
 		}
+
 	}
+	getchar();
 
 	return 0;
 }
