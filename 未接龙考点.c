@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int main() {
-	int begin, end, n, t;
+	int begin, end, n;
 
 	printf("请输入起始考场编号：");
 	scanf("%d", &begin);
