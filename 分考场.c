@@ -45,7 +45,7 @@ int main() {
 		printf("第%d所学校\n", i);
 		gets(temp_school);
 		p = (struct school *)malloc(sizeof(struct school));
-		strcpy(p->school,temp_school);
+		strcpy(p->school, temp_school);
 		if (head == NULL)
 			head = tail = p;
 		else {
@@ -112,15 +112,15 @@ int main() {
 	int n_assigned;//n_assigned当前考点分配的队伍数
 
 	for (i = 0; i < N_school; i++) {
-		n_assigned=0;
+		n_assigned = 0;
 		if (p->n_unassigned != 0) {
 			for (j = p->n_team - 1; j > p->n_team - 1 - p->n_unassigned; j--) {
 				p->name_team[j].num = num_room;
 			}
-			
-			n_assigned=p->n_unassigned;
+
+			n_assigned = p->n_unassigned;
 			p->n_unassigned = 0;
-			
+
 			p_temp = p;//p_temp表示当前学校后面的学校
 
 			for (k = i + 1; k < N_school; k++) {
@@ -128,19 +128,22 @@ int main() {
 				if (p_temp->n_unassigned != 0) {
 					if ((p->n_unassigned + p_temp->n_unassigned <= Room_maxnum_team)
 					        || ((p->n_unassigned + p_temp->n_unassigned <= Room_maxnum_team + 2) && Room_maxnum_team > 19)) {
-						for (j = p_temp->n_team - 1; j > p_temp->n_team - 1 - p_temp->n_unassigned; j--) 
+						for (j = p_temp->n_team - 1; j > p_temp->n_team - 1 - p_temp->n_unassigned; j--)
 							p_temp->name_team[j].num = num_room;
-						n_assigned+=p_temp->n_unassigned;
+						n_assigned += p_temp->n_unassigned;
 						p_temp->n_unassigned = 0;
 					}
 				}
-				if (n_assigned >= Room_maxnum_team)break;
+				if (n_assigned >= Room_maxnum_team)
+					break;
 			}
-			
+
 			num_room++;
-			
+
 		}
+
 		p = p->next;
+
 	}
 
 
@@ -153,10 +156,14 @@ int main() {
 		for (j = 0; j < p->n_team; j++) {
 			printf("%s   %s   线上考点 %03d\n", p->school, p->name_team[j].team, p->name_team[j].num);
 		}
+		p_temp = p;
 		p = p->next;
+		free(p_temp);//释放动态分配的内存
 	}
-	
+
 	printf("输出完毕！！！！");
+
+
 	return 0;
 }
 
