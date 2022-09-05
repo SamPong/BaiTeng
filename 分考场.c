@@ -38,7 +38,7 @@ int main() {
 	char temp_school[80];//%s学校名称
 	int temp_n_team;//%d各校队伍总数
 
-	//读取队伍信息
+	//读取学校信息
 
 	printf("请输入 学校 列(样例表格E列，不包含表头)：\n");
 	for (i = 1; i <= N_school; i++) {
@@ -54,9 +54,13 @@ int main() {
 		}
 	}
 
+	//读取各学校队伍信息
+
+	//读取各学校队伍总数
 	p = head;
 
 	printf("请输入 各校队伍总数 列(样例表格F列，不包含表头)：\n");
+
 	for (i = 1; i <= N_school; i++) {
 		printf("第%d所学校队伍总数\n", i);
 		scanf("%d", &temp_n_team);
@@ -65,13 +69,14 @@ int main() {
 		p = p->next;
 	}
 
+	//读取各学校队名
 	p = head;
 
 	printf("请输入 队名 列(样例表格B列，不包含表头)：\n");
-	for (i = 1; i <= N_school; i++) {
-		for (j = 0; j < p->n_team; j++) {
+	for (i = 1; i <= N_school; i++) {//遍历每个学校
+		for (j = 0; j < p->n_team; j++) {//遍历每个学校的每个队伍
 			gets(p->name_team[j].team);//读入队名
-			p->name_team[j].num = -1;//初始化考场编号为-1
+			p->name_team[j].num = -1;//初始化该队伍的考场编号为-1
 		}
 		p = p->next;
 	}
@@ -80,21 +85,23 @@ int main() {
 
 	num_room = 0;//考场编号
 	p = head;
-	int cnt_team;
+	int room_members[200]={0};//假定最多200考场，记录每个考场队伍数
 
 	//假如存在某个学校的队伍数大于考场容量，先给这个学校分配考场，分配的队伍数量为考场容量的整数倍
-	for (i = 0; i < N_school; i++) {
+	for (i = 0; i < N_school; i++) {//逐一查看每个学校
 		j = 0;
 		while (p->n_unassigned >= Room_maxnum_team) {
+			//看当前学校未分配的队伍数是否大于等于考场容量，如果大于考场容量，则先填满一个考场
 
-			for ( cnt_team = 0; cnt_team < Room_maxnum_team; cnt_team++) {
+			for ( room_members[num_room] =0; room_members[num_room]< Room_maxnum_team; room_members[num_room]++) {
 				p->name_team[j].num = num_room;
 				j++;
 			}
-			num_room++;
+			printf("第%d个考场%d队。\n",num_room,room_members[num_room]);
+			num_room++;//下一个考场
 			p->n_unassigned -= Room_maxnum_team;
 		}
-		p = p->next;
+		p = p->next;//下一个学校
 	}
 
 	//给各学校未分配考场的队伍分配考场，此时各学校未分配的队伍数量都小于考场容量
@@ -105,39 +112,39 @@ int main() {
 	看是否存在n_unassigned!=0的学校未分配队伍数量相加小于考场容量，如果相加小于考场容量也分配进同一考场，
 	如果遍历完了没有找到可以分配进同一考场的学校，那么遇到队伍数量相同的学校不再遍历，
 	*/
+	
+	
 
 	p = head;
 	int k;
 	struct school *p_temp;
-	int n_assigned;//n_assigned当前考点分配的队伍数
 
-	for (i = 0; i < N_school; i++) {
-		n_assigned = 0;
-		if (p->n_unassigned != 0) {
+	for (i = 0; i < N_school; i++) {//遍历所有学校
+		if (p->n_unassigned != 0) {//当前学校有未分配的队伍
+			//给当前学校未分配的队伍分配考点
 			for (j = p->n_team - 1; j > p->n_team - 1 - p->n_unassigned; j--) {
 				p->name_team[j].num = num_room;
 			}
 
-			n_assigned = p->n_unassigned;
-			p->n_unassigned = 0;
+			room_members[num_room] = p->n_unassigned;//当前考点已分配的队伍数增加
+			p->n_unassigned = 0;//当前学校未分配的队伍数归零
 
 			p_temp = p;//p_temp表示当前学校后面的学校
 
 			for (k = i + 1; k < N_school; k++) {
 				p_temp = p_temp->next;
 				if (p_temp->n_unassigned != 0) {
-					if ((p->n_unassigned + p_temp->n_unassigned <= Room_maxnum_team)
-					        || ((p->n_unassigned + p_temp->n_unassigned <= Room_maxnum_team + 2) && Room_maxnum_team > 19)) {
+					if ((room_members[num_room] + p_temp->n_unassigned )<= (Room_maxnum_team + 1)) {
 						for (j = p_temp->n_team - 1; j > p_temp->n_team - 1 - p_temp->n_unassigned; j--)
 							p_temp->name_team[j].num = num_room;
-						n_assigned += p_temp->n_unassigned;
+						room_members[num_room]+= p_temp->n_unassigned;
 						p_temp->n_unassigned = 0;
 					}
 				}
-				if (n_assigned >= Room_maxnum_team)
+				if (room_members[num_room] >= Room_maxnum_team)
 					break;
 			}
-
+			printf("第%d个考场%d队。\n",num_room,room_members[num_room]);
 			num_room++;
 
 		}
@@ -146,8 +153,8 @@ int main() {
 
 	}
 
-
-
+	getchar();
+	printf("回车输出给每个队伍的考点\n");
 	//输出给每个队伍的考点
 
 	p = head;
@@ -158,13 +165,14 @@ int main() {
 		}
 		p_temp = p;
 		p = p->next;
-		free(p_temp);//释放动态分配的内存
+		free(p_temp);
 	}
+
+	getchar();
 
 	printf("输出完毕！！！！");
 
 
 	return 0;
 }
-
 
