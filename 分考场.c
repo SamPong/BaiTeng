@@ -85,7 +85,7 @@ int main() {
 
 	num_room = 0;//考场编号
 	p = head;
-	int room_members[200]={0};//假定最多200考场，记录每个考场队伍数
+	int room_members[200] = {0}; //假定最多200考场，记录每个考场队伍数
 
 	//假如存在某个学校的队伍数大于考场容量，先给这个学校分配考场，分配的队伍数量为考场容量的整数倍
 	for (i = 0; i < N_school; i++) {//逐一查看每个学校
@@ -93,11 +93,11 @@ int main() {
 		while (p->n_unassigned >= Room_maxnum_team) {
 			//看当前学校未分配的队伍数是否大于等于考场容量，如果大于考场容量，则先填满一个考场
 
-			for ( room_members[num_room] =0; room_members[num_room]< Room_maxnum_team; room_members[num_room]++) {
+			for ( room_members[num_room] = 0; room_members[num_room] < Room_maxnum_team; room_members[num_room]++) {
 				p->name_team[j].num = num_room;
 				j++;
 			}
-			printf("第%d个考场%d队。\n",num_room,room_members[num_room]);
+			printf("第%d个考场%d队。\n", num_room, room_members[num_room]);
 			num_room++;//下一个考场
 			p->n_unassigned -= Room_maxnum_team;
 		}
@@ -112,8 +112,8 @@ int main() {
 	看是否存在n_unassigned!=0的学校未分配队伍数量相加小于考场容量，如果相加小于考场容量也分配进同一考场，
 	如果遍历完了没有找到可以分配进同一考场的学校，那么遇到队伍数量相同的学校不再遍历，
 	*/
-	
-	
+
+
 
 	p = head;
 	int k;
@@ -134,17 +134,17 @@ int main() {
 			for (k = i + 1; k < N_school; k++) {
 				p_temp = p_temp->next;
 				if (p_temp->n_unassigned != 0) {
-					if ((room_members[num_room] + p_temp->n_unassigned )<= (Room_maxnum_team + 1)) {
+					if ((room_members[num_room] + p_temp->n_unassigned ) <= (Room_maxnum_team)) {
 						for (j = p_temp->n_team - 1; j > p_temp->n_team - 1 - p_temp->n_unassigned; j--)
 							p_temp->name_team[j].num = num_room;
-						room_members[num_room]+= p_temp->n_unassigned;
+						room_members[num_room] += p_temp->n_unassigned;
 						p_temp->n_unassigned = 0;
 					}
 				}
 				if (room_members[num_room] >= Room_maxnum_team)
 					break;
 			}
-			printf("第%d个考场%d队。\n",num_room,room_members[num_room]);
+			printf("第%d个考场%d队。\n", num_room, room_members[num_room]);
 			num_room++;
 
 		}
@@ -175,4 +175,5 @@ int main() {
 
 	return 0;
 }
+
 
