@@ -4,9 +4,8 @@
   算法：
   1.读入数据
   2.计算每所学校的队伍数
-  3.如果学校队伍数超过了考场容量，则先填满一个考场
-  4.学校剩余队伍数按队伍数降序排序
-  5.从队伍数最多的学校开始分考场，找到队伍数能够拼凑的学校凑满一个考场再换下一个考场
+  3.学校按队伍数降序排序
+  4.从队伍数最多的学校开始分考场
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -313,12 +312,54 @@ int main(){
 			
 		}
 	}
+	printf("检查最后一个考场是否填满。\n");
+	room_num--;//最后一个考场的考场编号
+	//如果最后一个考场的队伍数小于考场容量，并且小于总的考场数，并且每个队伍来自不同的学校，则把最后一个考场的队伍均分到其他考场
+	if(room_team[room_num]<room_maxnum_teams&&room_team[room_num]<room_num){
+		//struct persons *last_room[room_team[room_num]];//存储最后一个考场每个队伍队长的指针
+		struct persons *last_room[room_maxnum_teams];
+		last_room[0]=person_tail;
+		person=person_tail->pre;
+		
+		for(i=0;i<room_team[room_num];person=person->pre){
+			if(!strcmp(person->team,person->next->team)&&!strcmp(person->school,person->next->school))
+				last_room[i]=person;
+			else {
+				i++;
+				last_room[i]=person;
+			}
+		}
+		//看最后一个考场的队伍是否有相同的学校
+		flag1=0;//假设最后一个考场没有队伍来自相同的学校
+		for(i=1;i<room_team[room_num];i++){
+			if(!strcmp(last_room[i]->school,last_room[i-1]->school)){
+				printf("最后一个考场有队伍来自相同的学校,需要手动修改最后一个考场队伍的考场编号。\n");
+				flag1=1;
+				break;
+			}
+		}
+		//如果最后一个考场没有队伍来自相同的学校，则把最后一个队伍均分到其他最后几个考场
+		int last_room_num=room_num;//记录最后一个考场的考场编号
+		if(!flag1){
+			printf("已将最后一个考场的队伍均分到其他考场\n");
+			for(i=0;i<room_team[last_room_num];i++){
+				room_num--;
+				last_room[i]->room_num=room_num;
+				for(j=1;j<last_room[i]->team_member;j++){
+					last_room[i]=last_room[i]->next;
+					last_room[i]->room_num=room_num;
+				}
+					
+					
+			}
+		}
+	}
 	
 	printf("回车输出每个人的考点\n");
 	getchar();
 	
-	
 	//输出每个人的考点
+	person=person_head;
 	for(i=0;i<n_person;i++){
 		printf("%s   %s   %s   线上考点 %03d\n",person->school,person->team,person->name,person->room_num);
 		person=person->next;
