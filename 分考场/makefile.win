@@ -1,0 +1,34 @@
+# Project: 项目2
+# Makefile created by Red Panda C++ 1.2
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+RES      = 项目2_private.res
+OBJ      = ../../../Desktop/分考场（XCPC第二版）给每个人分考场.o $(RES)
+LINKOBJ  = ../../../Desktop/分考场（XCPC第二版）给每个人分考场.o $(RES)
+CLEANOBJ  =  ..\..\..\Desktop\分考场（XCPC第二版）给每个人分考场.o 项目2_private.res 项目2.exe
+LIBS     =  -s -static
+INCS     =  
+CXXINCS  =  
+BIN      = 项目2.exe
+CXXFLAGS = $(CXXINCS)  -O2 -pipe
+CFLAGS   = $(INCS)  -O2 -pipe
+RM       = del /q /f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(CLEANOBJ) > NUL 2>&1
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+../../../Desktop/分考场（XCPC第二版）给每个人分考场.o: ../../../Desktop/分考场（XCPC第二版）给每个人分考场.c
+	$(CC) -c C:/Users/pat/Desktop/分考场（XCPC第二版）给每个人分考场.c -o ../../../Desktop/分考场（XCPC第二版）给每个人分考场.o $(CFLAGS)  -finput-charset=UTF-8 -fexec-charset=gbk
+
+项目2_private.res: 项目2_private.rc 
+	$(WINDRES) -i 项目2_private.rc --input-format=rc -o 项目2_private.res -O coff 
+
