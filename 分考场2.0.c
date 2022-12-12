@@ -14,10 +14,9 @@
 #define MAX_team_member 3//假设每队最多3人
 #define MAX_room 200//假设最多200个考场
 #define MAX_school_team 30//假设每校最多30队
-#define room_maxnum_teams 20//每个考场最多队伍数
 
 struct persons{
-	char name[13];
+	char name[50];
 	int room_num;//考场编号
 	char school[50];
 	int team_member;
@@ -39,6 +38,7 @@ struct school{
 };
 
 int main(){
+	int room_maxnum_teams;//每个考场最多队伍数
 	int n_person;//总人数
 	int cnt_school=0,cnt_team=0,i,j,flag1,flag2;
 	//int room_maxnum_teams=20;
@@ -52,9 +52,8 @@ int main(){
 	struct persons *person_head=NULL;
 	struct persons *person_tail=NULL;
 	
-
-
-	
+	printf("每个考场最多队伍数：");
+	scanf("%d",&room_maxnum_teams);
 	printf("输入总人数：");
 	scanf("%d",&n_person);
 	getchar();
@@ -153,13 +152,14 @@ int main(){
 		}
 		person=person->next;
 	}
-//	printf("cnt_team=%d",cnt_team);
+printf("cnt_team=%d",cnt_team);
 	//计算每个队伍的人数
 	person=person_head;
 	for(i=0;i<n_person;i++){
 		if((!i)||(strcmp(person->school,person->pre->school))||(strcmp(person->team,person->pre->team))){
 			person->team_member=1;
-			person1=person->next;
+			if(i!=n_person-1)person1=person->next;
+			else break;
 			for(j=0;j<9;j++){
 				if(!strcmp(person->school,person1->school)){
 //					printf("%s  %s  %s队伍人数计数：%d\n",person->school,person->team,person->name,person->team_member);
@@ -175,14 +175,15 @@ int main(){
 				person->team_member=person->pre->team_member;
 			
 		}
-//		printf("%s  %s  %s队伍人数：%d\n",person->school,person->team,person->name,person->team_member);
+		printf("%s  %s  %s  队伍人数：%d\n",person->school,person->team,person->name,person->team_member);
 		person=person->next;
 	}
-	
+printf("分考场\n");
 	//分考场
 	//假如存在某个学校的队伍数大于考场容量，先给这个学校分配考场，分配的队伍数量为考场容量的整数倍
 	for(p=head;p!=NULL;p=p->next) {//逐一查看每个学校
 		person=person_head;
+		printf("%s 未分配队伍数：%d\n",p->school,p->unassigned_team);
 		while(p->unassigned_team>=room_maxnum_teams){
 			//当前学校未分配的队伍数如果大于考场容量，则先填满一个考场
 			for(room_team[room_num]=0;room_team[room_num]<room_maxnum_teams||p->unassigned_team==1;person=person->next){
@@ -204,7 +205,7 @@ int main(){
 		
 	}
 	
-//	printf("将学校按照未分配队伍数降序排序\n");
+printf("将学校按照未分配队伍数降序排序\n");
 	//将学校按照未分配队伍数降序排序
 	//先找出队伍数最多的学校作为头结点
 	
@@ -227,7 +228,7 @@ int main(){
 	
 	//链表剩余部分排序,p2是上一轮找到的最大项，p1是本轮找到的最大项
 	for(i=1;i<cnt_school-1;i++){
-		printf("第 %d 所学校：%s  %d队未分配\n",i,p2->school,p2->unassigned_team);
+//		printf("第 %d 所学校：%s  %d队未分配\n",i,p2->school,p2->unassigned_team);
 		for(p=p1;p!=NULL;p=p->next)
 			if(p->unassigned_team>p1->unassigned_team)p1=p;
 		if(p1!=p2->next){
@@ -244,7 +245,7 @@ int main(){
 		p1=p1->next;
 	}
 
-	printf("给各学校未分配考场的队伍分配考场\n");
+//	printf("给各学校未分配考场的队伍分配考场\n");
 	//给各学校未分配考场的队伍分配考场，此时各学校未分配的队伍数量都小于考场容量
 	/*
 	  从第0个学校开始，遍历所有队伍，看是否有未分配的队伍，
@@ -259,7 +260,7 @@ int main(){
 		person=person_head;
 		if(p->unassigned_team!=0){//当前学校有未分配的队伍
 			//给当前学校未分配的队伍分配考点
-			printf("给 %s 未分配的队伍分配考点\n",p->school);
+//			printf("给 %s 未分配的队伍分配考点\n",p->school);
 			while(p->unassigned_team>0){
 				if(!strcmp(p->school,person->school)){
 					if(person->room_num==-1){
@@ -277,12 +278,12 @@ int main(){
 				if(person!=NULL)person=person->next;
 				else break;
 			}
-			printf("寻找与 %s 组合学校\n",p->school);
+//			printf("寻找与 %s 组合学校\n",p->school);
 			
 			for(p1=p->next;p1!=NULL;p1=p1->next){
 				if(p1->unassigned_team!=0){
 					if(p1->unassigned_team+room_team[room_num]<=room_maxnum_teams){
-						printf("找到 %s 与 %s 组合,%s %d\n",p1->school,p->school,p1->school,p1->unassigned_team);
+//						printf("找到 %s 与 %s 组合,%s %d\n",p1->school,p->school,p1->school,p1->unassigned_team);
 						person=person_head;
 						while(p1->unassigned_team>0){
 							if(!strcmp(p1->school,person->school)){
@@ -316,43 +317,7 @@ int main(){
 	room_num--;//最后一个考场的考场编号
 	//如果最后一个考场的队伍数小于考场容量，并且小于总的考场数，并且每个队伍来自不同的学校，则把最后一个考场的队伍均分到其他考场
 	if(room_team[room_num]<room_maxnum_teams&&room_team[room_num]<room_num){
-		//struct persons *last_room[room_team[room_num]];//存储最后一个考场每个队伍队长的指针
-		struct persons *last_room[room_maxnum_teams];
-		last_room[0]=person_tail;
-		person=person_tail->pre;
-		
-		for(i=0;i<room_team[room_num];person=person->pre){
-			if(!strcmp(person->team,person->next->team)&&!strcmp(person->school,person->next->school))
-				last_room[i]=person;
-			else {
-				i++;
-				last_room[i]=person;
-			}
-		}
-		//看最后一个考场的队伍是否有相同的学校
-		flag1=0;//假设最后一个考场没有队伍来自相同的学校
-		for(i=1;i<room_team[room_num];i++){
-			if(!strcmp(last_room[i]->school,last_room[i-1]->school)){
-				printf("最后一个考场有队伍来自相同的学校,需要手动修改最后一个考场队伍的考场编号。\n");
-				flag1=1;
-				break;
-			}
-		}
-		//如果最后一个考场没有队伍来自相同的学校，则把最后一个队伍均分到其他最后几个考场
-		int last_room_num=room_num;//记录最后一个考场的考场编号
-		if(!flag1){
-			printf("已将最后一个考场的队伍均分到其他考场\n");
-			for(i=0;i<room_team[last_room_num];i++){
-				room_num--;
-				last_room[i]->room_num=room_num;
-				for(j=1;j<last_room[i]->team_member;j++){
-					last_room[i]=last_room[i]->next;
-					last_room[i]->room_num=room_num;
-				}
-					
-					
-			}
-		}
+		printf("需要手动修改最后一个考场队伍的考场编号。\n");
 	}
 	
 	printf("回车输出每个人的考点\n");
