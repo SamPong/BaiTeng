@@ -1,122 +1,123 @@
 #include<stdio.h>
 #include<string.h>
 struct stu{
-	int seat;//座位号
-	char number[20];//考号
-	char name[10];//姓名
-	char school[30];//学校名称
+    int seat;//座位号
+//     char number[20];//考号
+//     char name[10];//姓名
+    char school[100];//学校名称
 }stu[500];//假设每个线下考点最多500考生
 
 struct school{
-	char school[30];//学校名称
-	int cnt_stu;//参赛学校人数
+    char school[100];//学校名称
+    int cnt_stu;//参赛学校人数
 }school[30];//假设一个赛点最多30个参赛学校
 
 
 struct seat{
-	struct stu a;//实际只用到了学校
+    struct stu a;//实际只用到了学校
 }seat_stu[501];//记录每个座位上的考生,座位从1开始排
 
 int main(){
-	int i,j,cnt_school=1,cnt_stu=1;//参赛学校数初始化为1
-	
-	//初始化全部学校的参赛人数为0
-	for(i=0;i<30;i++){
-		school[i].cnt_stu=0;
-	}
-	
-	//初始化所有的考生座位号为0
-	for(i=0;i<500;i++){
-		stu[i].seat=0;
-	}
-	
-	//printf("输入考生考号 姓名 学校：\n");
-	//读取第一个人，数组下标0
-	//scanf("%s%s%s",stu[0].number,stu[0].name,stu[0].school);
-	printf("输入考生的学校：\n");
-	scanf("%s",stu[0].school);
-	//记录第一个人的学校
-	strcpy(school[0].school,stu[0].school);
-	//第一个学校有1个人了
-	school[0].cnt_stu=1;
-	i=1;
-	//输入每个人的信息
-	//while(scanf("%s%s%s",stu[i].number,stu[i].name,stu[i].school)!=EOF){
-	
-	while(scanf("%s",stu[i].school)!=EOF){
-		//遍历之前的学校，看学校是否已存在，如果存在计数加1，如果不存在，记录该学校
-		for(j=0;j<cnt_school;j++){
-			//如果学校已存在,该校人数加1
-			if(!strcmp(school[j].school,stu[i].school)){
-				school[j].cnt_stu++;
-				break;
-			}
-		}
-		//如果该生的学校不存在，记录该学校
-		if(j==cnt_school){
-			cnt_school++;//学校计数加1
-			j++;
-			strcpy(school[j].school,stu[i].school);
-			school[j].cnt_stu++;
-		}
-		//下一个考生
-		i++;
-		cnt_stu++;
-	}
-	//以上读取结束，有了总人数、学校数及每个学校的人数
-	//现在要给考生分考场，先给第1个考生分座位，
-	//再遍历找一个学校不同的且未分配座位的考生分座位，以此类推
-	//如果不能找到不同的学校，那么就只剩这个学校,这个学校剩余考生各位就坐
-	
-	//记录考生人数最大值
-	int max_stu=cnt_stu;
+    int i,j,cnt_school=1,cnt_stu=1;//参赛学校数初始化为1
+    
+    //初始化全部学校的参赛人数为0
+    for(i=0;i<30;i++){
+        school[i].cnt_stu=0;
+    }
+    
+    //初始化所有的考生座位号为0
+    for(i=0;i<500;i++){
+        stu[i].seat=0;
+    }
+    
+    //printf("输入考生考号 姓名 学校：\n");
+    //读取第一个人，数组下标0
+    //scanf("%s%s%s",stu[0].number,stu[0].name,stu[0].school);
+    
+    //printf("输入考生的学校：\n");
+    scanf("%s",stu[0].school);
+    //记录第一个人的学校
+    strcpy(school[0].school,stu[0].school);
+    //第一个学校有1个人了
+    school[0].cnt_stu=1;
+    i=1;
+    //输入每个人的信息
+    //while(scanf("%s%s%s",stu[i].number,stu[i].name,stu[i].school)!=EOF){
+    
+    while(scanf("%s",stu[i].school)!=EOF){
+        //遍历之前的学校，看学校是否已存在，如果存在计数加1，如果不存在，记录该学校
+        for(j=0;j<cnt_school;j++){
+            //如果学校已存在,该校人数加1
+            if(!strcmp(school[j].school,stu[i].school)){
+                school[j].cnt_stu++;
+                break;
+            }
+        }
+        //如果该生的学校不存在，记录该学校
+        if(j==cnt_school){
+            cnt_school++;//学校计数加1
+            j++;
+            strcpy(school[j].school,stu[i].school);
+            school[j].cnt_stu++;
+        }
+        //下一个考生
+        i++;
+        cnt_stu++;
+    }
+    //以上读取结束，有了总人数、学校数及每个学校的人数
+    //现在要给考生分考场，先给第1个考生分座位，
+    //再遍历找一个学校不同的且未分配座位的考生分座位，以此类推
+    //如果不能找到不同的学校，那么就只剩这个学校,这个学校剩余考生各位就坐
+    
+    //记录考生人数最大值
+    int max_stu=cnt_stu;
 
-	//给第一个人分配座位
-	stu[0].seat=1;
-	//记录第1个座位上的人的学校
-	strcpy(seat_stu[1].a.school,stu[0].school);
-	cnt_stu--;//减到0就分配完了
-	//排后面的人,i是人的循环变量，j是座位号的循环变量
-	i=1;j=2;
-	//每一个座位上的人都和前一个座位上的人的学校不一样
-	while(cnt_stu){
-		//从第2个人开始遍历所有考生，每次都从头遍历，这里可以优化
-		for(i=1;i<max_stu;i++){
-			//找到未分配座位的人
-			if(!stu[i].seat){
-				//如果学校和前一个座位上的人不一样
-				if(strcmp(seat_stu[j-1].a.school,stu[i].school)){
-					stu[i].seat=j;//给这个人分配座位
-					strcpy(seat_stu[j].a.school,stu[i].school);//更新座位记录的学校
-					cnt_stu--;//未分配人数减1
-					j++;//下一个座位
-					break;
-				}
-			}
-		}
-		//遍历到最后一个人也没有找到不同学校则
-		if(i==max_stu)break;
-	}
-	j--;//回到已分配的最后一个座位
-	i=1;
-	//如果还有人未分配，则隔位就坐
-	if(cnt_stu){
-		while(cnt_stu){
-			//找到未分配座位的人
-			i++;
-			if(!stu[i].seat){
-				j+=2;
-				stu[i].seat=j;
-				cnt_stu--;//未分配人数减1
-			}
-		}
-	}
-	//按照输入的顺序输出考生的座位号 考号 姓名 学校。
-//	for(i=0;i<max_stu;i++){
-//		printf("%d %s %s %s\n",stu[i].seat,stu[i].number,stu[i].name,stu[i].school);
-//	}
-	for(i=0;i<max_stu;i++)
-		printf("%d\n",stu[i].seat);
-	
-	return 0;
+    //给第一个人分配座位
+    stu[0].seat=1;
+    //记录第1个座位上的人的学校
+    strcpy(seat_stu[1].a.school,stu[0].school);
+    cnt_stu--;//减到0就分配完了
+    //排后面的人,i是人的循环变量，j是座位号的循环变量
+    i=1;j=2;
+    //每一个座位上的人都和前一个座位上的人的学校不一样
+    while(cnt_stu){
+        //从第2个人开始遍历所有考生，每次都从头遍历，这里可以优化
+        for(i=1;i<max_stu;i++){
+            //找到未分配座位的人
+            if(!stu[i].seat){
+                //如果学校和前一个座位上的人不一样
+                if(strcmp(seat_stu[j-1].a.school,stu[i].school)){
+                    stu[i].seat=j;//给这个人分配座位
+                    strcpy(seat_stu[j].a.school,stu[i].school);//更新座位记录的学校
+                    cnt_stu--;//未分配人数减1
+                    j++;//下一个座位
+                    break;
+                }
+            }
+        }
+        //遍历到最后一个人也没有找到不同学校则
+        if(i==max_stu)break;
+    }
+    j--;//回到已分配的最后一个座位
+    i=1;
+    //如果还有人未分配，则隔位就坐
+    if(cnt_stu){
+        while(cnt_stu){
+            //找到未分配座位的人
+            i++;
+            if(!stu[i].seat){
+                j+=2;
+                stu[i].seat=j;
+                cnt_stu--;//未分配人数减1
+            }
+        }
+    }
+    //按照输入的顺序输出考生的座位号 考号 姓名 学校。
+//    for(i=0;i<max_stu;i++){
+//        printf("%d %s %s %s\n",stu[i].seat,stu[i].number,stu[i].name,stu[i].school);
+//    }
+    for(i=0;i<max_stu;i++)
+        printf("%d\n",stu[i].seat);
+    
+    return 0;
 }
